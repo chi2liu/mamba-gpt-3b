@@ -2,6 +2,16 @@
 
 It is almost the best 3B model in the current open source industry, surpassing dolly-v2-3b, open-lama-3b, and even outperforming the EleutherAI/pythia-12b model in terms of performance. Can refer to open_llm_leaderboard
 
+| Metric                | Value |
+|-----------------------|-------|
+| MMLU (5-shot)         | 25.3  |
+| ARC (25-shot)         | 40.5  |
+| HellaSwag (10-shot)   | 64.9  |
+| TruthfulQA (0-shot)   | 37.1  |
+| Avg.                  | 42.0  | 
+
+We use state-of-the-art [Language Model Evaluation Harness](https://github.com/EleutherAI/lm-evaluation-harness) to run the benchmark tests above.
+
 
 <p align="center" width="100%">
 <img src="./mamba-gpt3.png" alt="OpenAlpaca" style="width: 80%; min-width: 300px; display: block; margin: auto;">
