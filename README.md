@@ -4,7 +4,7 @@ It is almost the best 3B model in the current open source industry, surpassing D
 
 
 <p align="center" width="100%">
-<img src="./image.png" alt="OpenAlpaca" style="width: 50%; min-width: 300px; display: block; margin: auto;">
+<img src="./mamba-gpt3.png" alt="OpenAlpaca" style="width: 50%; min-width: 300px; display: block; margin: auto;">
 </p>
 
 ![Data License](https://img.shields.io/badge/Data_License-CC%20BY--SA%203.0-red.svg)
