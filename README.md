@@ -1,6 +1,6 @@
 # mamba-gpt-3b: The Best 3B model Fully Open-Source Instruction-Following Model Based On OpenLLaMA
 
-It is almost the best 3B model in the current open source industry, surpassing Dolly v2-3b, open lama-3b, and even outperforming the EleutherAI/pythia-12b model in terms of performance. Can refer to open_llm_leaderboard
+It is almost the best 3B model in the current open source industry, surpassing dolly-v2-3b, open-lama-3b, and even outperforming the EleutherAI/pythia-12b model in terms of performance. Can refer to open_llm_leaderboard
 
 
 <p align="center" width="100%">
@@ -12,216 +12,235 @@ It is almost the best 3B model in the current open source industry, surpassing D
 ![Model Weight License](https://img.shields.io/badge/Model_Weights%20License-Apache_2.0-green.svg)
 ![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)
 
-**Team:** [Yixuan Su](https://yxuansu.github.io/)<sup>\*</sup>, [Tian Lan](https://github.com/gmftbyGMFTBY)<sup>\*</sup>, and [Deng Cai](https://jcyk.github.io/) (The first two members<sup>\*</sup> contributed equally.)
 
-This is the repo for the OpenAlpaca project, which aims to build and share an instruction-following model based on [OpenLLaMA](https://github.com/openlm-research/open_llama). We note that, following OpenLLaMA, OpenAlpaca is permissively licensed under [the Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0). We also highlight that the training of OpenAlpaca only takes around **30** minutes on 8xA100 GPUs.
+This is the repo for the mamba-gpt-3b project, which aims to build and share an instruction-following model based on [OpenLLaMA](https://github.com/openlm-research/open_llama). We note that, following OpenLLaMA, mamba-gpt-3b is permissively licensed under [the Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0). We also highlight that the training of mamba-gpt-3b only using one A100 GPUs.
 
 This repo contains
 - The <a href='#weights'>weights</a> for the fine-tuned model.
 - The <a href='#data'>data</a> used for fine-tuning the model.
-- The <a href='#example_usage'>example usage</a> of OpenAlpaca.
+- The <a href='#example_usage'>example usage</a> of mamba-gpt-3b.
 - The <a href='#code'>code</a> for fine-tuning the model.
 
-**Usage and License Notices:** OpenAlpaca follows the distribution permission of [OpenLLaMA](https://github.com/openlm-research/open_llama), i.e. the Apache 2.0 license, which means OpenAlpaca can be used in any academic or commercial purposes for free.
+**Usage and License Notices:** mamba-gpt-3b follows the distribution permission of [OpenLLaMA](https://github.com/openlm-research/open_llama), i.e. the Apache 2.0 license, which means OpenAlpaca can be used in any academic or commercial purposes for free.
 
 ****
 
 # News:
-* [2023/05/27] Update the training scripts and release models based on the lasted checkpoints of OpenLLaMA.
-* [2023/05/04] Open-sourced OpenAlpaca.
+* [2023/07/24] Open-sourced mamba-gpt-3b.
 
 ****
 
 <span id='weights'/>
 
-# Model Weights:
+# Model Card
+## Summary
 
-|**Model Name**|**Model Card**|**Maximum Length**|**Model Description**|
-|:-------------:|:-------------:|:-------------:|:-------------:|
-|`openllmplayground/openalpaca_3b_600bt_preview`|[[Link]](https://huggingface.co/openllmplayground/openalpaca_3b_600bt_preview)|1536|```The OpenAlpaca model fine-tuned from the previewed version of OpenLLaMA-3B that is trained with 600 billion tokens.```|
-|`openllmplayground/openalpaca_7b_700bt_preview`|[[Link]](https://huggingface.co/openllmplayground/openalpaca_7b_700bt_preview)|1024|```The OpenAlpaca model fine-tuned from the previewed version of OpenLLaMA-7B that is trained with 700 billion tokens.```|
+We have fine-tuned the open-lama model and surpassed the original model in multiple evaluation subtasks, making it currently the best performing 3B model with comparable performance to llama-7b
+- Base model: [openlm-research/open_llama_3b](https://huggingface.co/openlm-research/open_llama_3b)
 
-<span id='data'/>
+## Usage
 
-# Data:
+To use the model with the `transformers` library on a machine with GPUs, first make sure you have the `transformers`, `accelerate` and `torch` libraries installed.
 
-The data, i.e. [openalpaca.json](https://github.com/yxuansu/OpenAlpaca/blob/main/openalpaca.json), we use to fine-tune the model contains ~15k instances and is constructed from the [databricks-dolly-15k dataset](https://huggingface.co/datasets/databricks/databricks-dolly-15k) by removing samples that are too long. Following the original databricks-dolly-15k dataset, our data is also licensed under [the CC BY-SA 3.0 license](https://repositories.lib.utexas.edu/bitstream/handle/2152/11616/license_text?sequence=2&isAllowed=y) which allows it to be used in any academic and commerical purposes. 
-
-**Format:** Following [Stanford Alpaca](https://github.com/tatsu-lab/stanford_alpaca), our json file is a list of dictionaries, each one contains the following fields.
-- `instruction`: it describes the task the model should perform.
-- `input`: optional context or input for the task (e.g. the document for summarization task). 
-- `output`: the answer to the instruction (and the optional input) which is written by human.
-
-We use the following prompts to fine-tune the OpenAlpaca model:
-- for examples with an empty input field:
+```bash
+pip install transformers==4.29.2
+pip install accelerate==0.19.0
+pip install torch==2.0.0
 ```
-Below is an instruction that describes a task. Write a response that appropriately completes the request.
-
-### Instruction:
-{instruction}
-
-### Response:
-```
-
-- for examples with a non-empty input field:
-```
-Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
-
-### Instruction:
-{instruction}
-
-### Input:
-{input}
-
-### Response:
-```
-
-**Reproduce the data:** To reproduce the data, simply run `python3 process_dataset.py`.
-
-<span id='example_usage'/>
-
-# Example Usage:
-
-**[Note]** We would like to note that, unlike LLaMA, OpenAlpaca uses the token id of **1** as the bos (begining of the sequence) token. This follows the definition of OpenLLaMA. Please refer to the authors' [orginal implementations](https://github.com/openlm-research/open_llama#preview-weights-release-and-usage) for more information.
-
-Below shows an example on how to use OpenAlpaca.
 
 ```python
 import torch
-from transformers import LlamaForCausalLM, LlamaTokenizer
+from transformers import pipeline
 
-# the previewed version of OpenAlpaca
-model_path = r'openllmplayground/openalpaca_3b_600bt_preview'
-tokenizer = LlamaTokenizer.from_pretrained(model_path)
-model = LlamaForCausalLM.from_pretrained(model_path).cuda()
-tokenizer.bos_token_id, tokenizer.eos_token_id = 1,2 # see https://github.com/openlm-research/open_llama#preview-weights-release-and-usage
+generate_text = pipeline(
+    model="CobraMamba/mamba-gpt-3b",
+    torch_dtype="auto",
+    trust_remote_code=True,
+    use_fast=False,
+    device_map={"": "cuda:0"},
+)
 
-# same prompt as provided in https://crfm.stanford.edu/2023/03/13/alpaca.html
-instruction = r'What is an alpaca? How is it different from a llama?'
-'''
-instruction = r'Write an e-mail to congratulate new Standford admits and mention that you are excited about meeting all of them in person.'
-instruction = r'What is the capital of Tanzania?'
-instruction = r'Write a well-thought out abstract for a machine learning paper that proves that 42 is the optimal seed for training neural networks.'
-'''
+res = generate_text(
+    "Why is drinking water so healthy?",
+    min_new_tokens=2,
+    max_new_tokens=1024,
+    do_sample=False,
+    num_beams=1,
+    temperature=float(0.3),
+    repetition_penalty=float(1.2),
+    renormalize_logits=True
+)
+print(res[0]["generated_text"])
+```
 
-prompt_no_input = f'Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\n{instruction}\n\n### Response:'
-tokens = tokenizer.encode(prompt_no_input)
+You can print a sample prompt after the preprocessing step to see how it is feed to the tokenizer:
 
-tokens = torch.LongTensor(tokens).unsqueeze(0)
-instance = {'input_ids': tokens,
-                    'top_k': 50,
-                    'top_p': 0.9,
-                    'generate_len': 128}
-                    
-length = len(tokens[0])
-with torch.no_grad():
-    rest = model.generate(
-            input_ids=tokens, 
-            max_length=length+instance['generate_len'], 
-            use_cache=True, 
-            do_sample=True, 
-            top_p=instance['top_p'], 
-            top_k=instance['top_k']
+```python
+print(generate_text.preprocess("Why is drinking water so healthy?")["prompt_text"])
+```
+
+```bash
+<|prompt|>Why is drinking water so healthy?</s><|answer|>
+```
+
+Alternatively, you can download the mamba_gpt_pipeline.py, store it alongside your notebook, and construct the pipeline yourself from the loaded model and tokenizer. If the model and the tokenizer are fully supported in the `transformers` package, this will allow you to set `trust_remote_code=False`.
+
+```python
+import torch
+from mamba_gpt_pipeline.py import MambaGPTTextGenerationPipeline
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+tokenizer = AutoTokenizer.from_pretrained(
+    "CobraMamba/mamba-gpt-3b",
+    use_fast=False,
+    padding_side="left",
+    trust_remote_code=False,
+)
+model = AutoModelForCausalLM.from_pretrained(
+    "CobraMamba/mamba-gpt-3b",
+    torch_dtype="auto",
+    device_map={"": "cuda:0"},
+    trust_remote_code=False,
+)
+generate_text = MambaGPTTextGenerationPipeline(model=model, tokenizer=tokenizer)
+
+res = generate_text(
+    "Why is drinking water so healthy?",
+    min_new_tokens=2,
+    max_new_tokens=1024,
+    do_sample=False,
+    num_beams=1,
+    temperature=float(0.3),
+    repetition_penalty=float(1.2),
+    renormalize_logits=True
+)
+print(res[0]["generated_text"])
+```
+
+
+You may also construct the pipeline from the loaded model and tokenizer yourself and consider the preprocessing steps:
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model_name = "CobraMamba/mamba-gpt-3b"  # either local folder or huggingface model name
+# Important: The prompt needs to be in the same format the model was trained with.
+# You can find an example prompt in the experiment logs.
+prompt = "<|prompt|>How are you?</s><|answer|>"
+
+tokenizer = AutoTokenizer.from_pretrained(
+    model_name,
+    use_fast=False,
+    trust_remote_code=False,
+)
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    torch_dtype="auto",
+    device_map={"": "cuda:0"},
+    trust_remote_code=False,
+)
+model.cuda().eval()
+inputs = tokenizer(prompt, return_tensors="pt", add_special_tokens=False).to("cuda")
+
+# generate configuration can be modified to your needs
+tokens = model.generate(
+    **inputs,
+    min_new_tokens=2,
+    max_new_tokens=1024,
+    do_sample=False,
+    num_beams=1,
+    temperature=float(0.3),
+    repetition_penalty=float(1.2),
+    renormalize_logits=True
+)[0]
+
+tokens = tokens[inputs["input_ids"].shape[1]:]
+answer = tokenizer.decode(tokens, skip_special_tokens=True)
+print(answer)
+```
+
+## Model Architecture
+
+```
+LlamaForCausalLM(
+  (model): LlamaModel(
+    (embed_tokens): Embedding(32000, 4096, padding_idx=0)
+    (layers): ModuleList(
+      (0-31): 32 x LlamaDecoderLayer(
+        (self_attn): LlamaAttention(
+          (q_proj): Linear(in_features=4096, out_features=4096, bias=False)
+          (k_proj): Linear(in_features=4096, out_features=4096, bias=False)
+          (v_proj): Linear(in_features=4096, out_features=4096, bias=False)
+          (o_proj): Linear(in_features=4096, out_features=4096, bias=False)
+          (rotary_emb): LlamaRotaryEmbedding()
         )
-        
-output = rest[0][length:]
-string = tokenizer.decode(output, skip_special_tokens=True)
-print(f'[!] Generation results: {string}')
+        (mlp): LlamaMLP(
+          (gate_proj): Linear(in_features=4096, out_features=11008, bias=False)
+          (down_proj): Linear(in_features=11008, out_features=4096, bias=False)
+          (up_proj): Linear(in_features=4096, out_features=11008, bias=False)
+          (act_fn): SiLUActivation()
+        )
+        (input_layernorm): LlamaRMSNorm()
+        (post_attention_layernorm): LlamaRMSNorm()
+      )
+    )
+    (norm): LlamaRMSNorm()
+  )
+  (lm_head): Linear(in_features=4096, out_features=32000, bias=False)
+)
 ```
 
-**[Model Output]**
-```
-[!] Generation results: Alpacas are a species of South American camelid, the smallest of the three living species native 
-to South America (llamas and guanaco are the other two). Alpacas are slightly larger than llamas at 50 to 70 pounds 
-(22 to 31 kilograms). Their tails have a tuft of hair at the end, whereas llamas' tails are just knobby. Alpacas have 
-brown or black coats.
-```
+## Evaluation
+We evaluated OpenLLaMA on a wide range of tasks using [lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness).  The LLaMA results are generated by running the original LLaMA model on the same evaluation metrics. We note that our results for the LLaMA model differ slightly from the original LLaMA paper, which we believe is a result of different evaluation protocols. Similar differences have been reported in [this issue of lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness/issues/443). Additionally, we present the results of GPT-J, a 6B parameter model trained on the [Pile](https://pile.eleuther.ai/) dataset by [EleutherAI](https://www.eleuther.ai/).
+
+The original LLaMA model was trained for 1 trillion tokens and GPT-J was trained for 500 billion tokens.  We present the results in the table below. OpenLLaMA exhibits comparable performance to the original LLaMA and GPT-J across a majority of tasks, and outperforms them in some tasks.
 
 
-<span id='future_plans'/>
-
-<span id='code'/>
-
-# Fine-tuning the Model:
-
-## 1. Environment Setup:
-
-The fine-tuning of OpenAlpaca takes on a machine with 8xA100 (40G) GPUs and a CUDA version of 11.7.
-
-To install the required environment, simply run the following command.
-```yaml
-pip install -r requirements.txt
-```
-
-If any error occurs when installing torch, you can install torch manually with the command below.
-```yaml
-pip install torch==1.13.1+cu117 -f https://download.pytorch.org/whl/torch/
-```
-
-## 2. Model Training:
-
-In our experiments, we train our model using DeepSpeed with Zero-3 on 8xA100 GPUs. To start the training of 3B model, run the following command. 
-```yaml
-cd ./scripts/
-chmod +x train_openalpaca_3b.sh 
-cd ..
-./scripts/train_openalpaca_3b.sh
-```
-
-To start the training of 7B model, run the following command. 
-```yaml
-cd ./scripts/
-chmod +x train_openalpaca_7b.sh 
-cd ..
-./scripts/train_openalpaca_7b.sh
-```
-
-The key arguments of the training script are as follows:
-* `--max_length`: The maximum sequence length of training instances.
-* `--data_path`: The path of training data.
-* `--save_path`: The path to save the fine-tuned OpenAlpaca checkpoint.
-
-The table below shows the hyperparameters of the learning process.
-
-|**Model Size**|**Batch Size**|**Learning Rate**|**Epoch Number**|**Maximum length**|
-|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|
-|3B|64|2e-5|3|1536|
-|7B|64|2e-5|3|1024|
+| **Task/Metric**        | finetuned-GPT 3B  | OpenLLaMA 3B |
+| ---------------------- | -------- | ------------ |
+| anli_r1/acc            | **0.35** | 0.33         |      
+| anli_r2/acc            | **0.33** | 0.32         | 
+| anli_r3/acc            | 0.35     | 0.35         | 
+| arc_challenge/acc      | **0.35** | 0.34         | 
+| arc_challenge/acc_norm | 0.37     | 0.37         |
+| arc_easy/acc           | **0.71** | 0.69         | 
+| arc_easy/acc_norm      | 0.65     | 0.65         | 
+| boolq/acc              | **0.72** | 0.66         | 
+| hellaswag/acc          | **0.49** | 0.43         | 
+| hellaswag/acc_norm     | 0.66     | **0.67**         |
+| openbookqa/acc         | 0.26     | **0.27**         | 
+| openbookqa/acc_norm    | 0.40     | 0.40         | 
+| piqa/acc               | **0.76** | 0.75         | 
+| piqa/acc_norm          | 0.76     | 0.76         | 
+| record/em              | 0.88     | 0.88         | 
+| record/f1              | 0.88     | **0.89**         | 
+| rte/acc                | 0.55     | **0.58**         | 
+| truthfulqa_mc/mc1      | **0.27** | 0.22         | 
+| truthfulqa_mc/mc2      | **0.37** | 0.35         |
+| wic/acc                | **0.49** | 0.48         | 
+| winogrande/acc         | **0.63** | 0.62         | 
+| Average                | **0.53** | 0.52         | 
 
 
+We removed the task CB and WSC from our benchmark, as our model performs suspiciously well on these two tasks. We hypothesize that there could be a benchmark data contamination in the training set.
 
-The `batch_size` and `learning_rate` can be adjusted in [./dsconfig/openllama.json](./dsconfig/openllama.json). The `epoch_number` can be adjusted in [./config/openllama.yaml](./config/openllama.yaml).
+## Disclaimer
 
-After the training completes, you find the tokenizer, configuration, and deepspeed checkpoints in `--save_path`. Running the following command to convert the deepspeed checkpints to torch models.
-```yaml
-python {--save_path}/zero_to_fp32.py {--save_path} {--save_path}/pytorch_model.bin
-```
-Then, you can find the torch model `pytorch_model.bin` in `--save_path`.
+Please read this disclaimer carefully before using the large language model provided in this repository. Your use of the model signifies your agreement to the following terms and conditions.
 
-The resulting checkpoint `pytorch_model.bin` is quite large. If you would like to split it into multiple shards, you can run the command below.
-```yaml
-./scripts/make_shards.sh
-```
+- Biases and Offensiveness: The large language model is trained on a diverse range of internet text data, which may contain biased, racist, offensive, or otherwise inappropriate content. By using this model, you acknowledge and accept that the generated content may sometimes exhibit biases or produce content that is offensive or inappropriate. The developers of this repository do not endorse, support, or promote any such content or viewpoints.
+- Limitations: The large language model is an AI-based tool and not a human. It may produce incorrect, nonsensical, or irrelevant responses. It is the user's responsibility to critically evaluate the generated content and use it at their discretion.
+- Use at Your Own Risk: Users of this large language model must assume full responsibility for any consequences that may arise from their use of the tool. The developers and contributors of this repository shall not be held liable for any damages, losses, or harm resulting from the use or misuse of the provided model.
+- Ethical Considerations: Users are encouraged to use the large language model responsibly and ethically. By using this model, you agree not to use it for purposes that promote hate speech, discrimination, harassment, or any form of illegal or harmful activities.
+- Reporting Issues: If you encounter any biased, offensive, or otherwise inappropriate content generated by the large language model, please report it to the repository maintainers through the provided channels. Your feedback will help improve the model and mitigate potential issues.
+- Changes to this Disclaimer: The developers of this repository reserve the right to modify or update this disclaimer at any time without prior notice. It is the user's responsibility to periodically review the disclaimer to stay informed about any changes.
 
-> **** After spliting, the directory of saved checkpoints should look like:
+By using the large language model provided in this repository, you agree to accept and comply with the terms and conditions outlined in this disclaimer. If you do not agree with any part of this disclaimer, you should refrain from using the model and any content generated by it.
 
-    .
-    └── ./ckpt/openalpaca/             
-        ├── config.json
-        ├── generation_config.json
-        ├── pytorch_model-00001-of-00003.bin
-        ├── pytorch_model-00002-of-00003.bin
-        ├── pytorch_model-00003-of-00003.bin
-        ├── pytorch_model.bin.index.json
-        ├── special_tokens_map.json
-        ├── tokenizer_config.json
-        └── tokenizer.model
-        
-Now the model is good to go! Enjoy playing with OpenAlpaca!
 
 # Future Plans:
 
-1. The current model is fine-tuned on the previewed version of OpenLLaMA. We expect the performance of the base OpenLLaMA model to improve as the training continues. We will update the version of OpenAlpaca so long as newer checkpoint is released by the authors of OpenLLaMA.
+1. The current model is fine-tuned on the previewed version of OpenLLaMA. We expect the performance of the base OpenLLaMA model to improve as the training continues. We will update the version of mamba-gpt-3b so long as newer checkpoint is released by the authors of OpenLLaMA.
 
 2. We also plan to do a rigorous evaluation of OpenAlpaca and compare it with other publicly accessible models.
 
