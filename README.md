@@ -1,6 +1,7 @@
 # mamba-gpt-3b: The Best 3B model Fully Open-Source Instruction-Following Model Based On OpenLLaMA
 
-It is almost the best 3B model in the current open source industry, surpassing dolly-v2-3b, open-lama-3b, and even outperforming the EleutherAI/pythia-12b model in terms of performance. Can refer to open_llm_leaderboard
+It is almost the best 3B model in the current open source industry, surpassing dolly-v2-3b, open-lama-3b, and even outperforming the EleutherAI/pythia-12b model in terms of performance. Can refer to [open_llm_leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)
+
 
 | Metric                | Value |
 |-----------------------|-------|
@@ -43,6 +44,9 @@ This repo contains
 <span id='weights'/>
 
 # Model Card
+## HuggingFace
+https://huggingface.co/CobraMamba/mamba-gpt-3b
+
 ## Summary
 
 We have fine-tuned the open-lama model and surpassed the original model in multiple evaluation subtasks, making it currently the best performing 3B model with comparable performance to llama-7b
